@@ -27,6 +27,7 @@ const sendTestEmail = async (): Promise<void> => {
       console.log(`📝 Trying port: ${port}`);
 
       // Создание транспортера для отправки почты
+      console.log(`📝 Creating transporter for port ${port}`);
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: port,  
@@ -39,10 +40,15 @@ const sendTestEmail = async (): Promise<void> => {
         debug: true,   
       });
 
+      // Логируем создание транспортера
+      console.log(`🔧 Transporter created for port ${port}`);
+
       // Заменяем {{name}} на имя получателя
       const emailContent = htmlTemplate.replace('{{name}}', 'David');
+      console.log(`📝 Email content prepared for sending: ${emailContent.substring(0, 100)}...`); // Выводим первые 100 символов
 
       // Отправляем письмо
+      console.log(`📤 Sending email on port ${port}`);
       const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM, 
         to: 'davidbadzgaradze@gmail.com',
@@ -51,7 +57,7 @@ const sendTestEmail = async (): Promise<void> => {
       });
 
       console.log(`✅ Message sent on port ${port}: ${info.messageId}`);
-      break; 
+      break;  // Выход из цикла после успешной отправки
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error(`❌ Error sending email on port ${port}: ${err.message}`);
@@ -63,4 +69,5 @@ const sendTestEmail = async (): Promise<void> => {
 };
 
 // Запускаем отправку тестового письма
+console.log("🔔 Starting email sending process...");
 sendTestEmail();
