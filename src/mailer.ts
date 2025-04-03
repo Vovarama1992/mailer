@@ -26,7 +26,7 @@ const sendTestEmail = async (): Promise<void> => {
     try {
       console.log(`📝 Trying port: ${port}`);
 
-      // Создание транспортера для отправки почты
+      // Создание транспортера для отправки почты с дополнительным логированием
       console.log(`📝 Creating transporter for port ${port}`);
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
@@ -40,7 +40,7 @@ const sendTestEmail = async (): Promise<void> => {
           rejectUnauthorized: false,
         },
         logger: true,  
-        debug: true,   
+        debug: true,   // Включаем отладку для всех команд SMTP
       });
 
       // Логируем создание транспортера
@@ -54,7 +54,7 @@ const sendTestEmail = async (): Promise<void> => {
       console.log(`📤 Sending email on port ${port}`);
       const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM, 
-        to: 'davidbadzgaradze@gmail.com',
+        to: 'vovayhh9988@gmail.com',
         subject: 'Test email from SMTP server',
         html: emailContent,
       });
