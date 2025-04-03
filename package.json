@@ -1,5 +1,6 @@
 {
   "name": "mailer",
+  "type": "module",
   "version": "1.0.0",
   "main": "mailer.js",
   "scripts": {
