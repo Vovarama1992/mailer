@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'; 
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from 'path';
 
