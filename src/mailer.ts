@@ -19,25 +19,25 @@ let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 // Список портов для пробования
 const ports: number[] = [25, 587, 465];
 
-// Создание транспортера для отправки почты
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: 465,  
-  secure: true, 
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  logger: true,  
-  debug: true,   
-});
-
 // Отправка тестового письма
 const sendTestEmail = async (): Promise<void> => {
   for (let i = 0; i < ports.length; i++) {
     const port = ports[i];
     try {
       console.log(`📝 Trying port: ${port}`);
+
+      // Создание транспортера для отправки почты
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: port,  
+        secure: port === 465, // Если порт 465, использовать secure: true
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+        logger: true,  
+        debug: true,   
+      });
 
       // Заменяем {{name}} на имя получателя
       const emailContent = htmlTemplate.replace('{{name}}', 'David');
