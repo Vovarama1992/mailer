@@ -1,15 +1,25 @@
 import * as dotenv from 'dotenv'; 
-import * as nodemailer from 'nodemailer';
-import * as fs from 'fs';
-import * as path from 'path';
+import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+// Устанавливаем переменные окружения
 dotenv.config();
 
+// Получаем путь к текущему файлу
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Путь к шаблону письма
 const templatePath = path.join(__dirname, 'template.html');
 let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
+// Список портов для пробования
 const ports: number[] = [25, 587, 465];
 
+// Создание транспортера для отправки почты
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: 465,  
@@ -22,14 +32,17 @@ const transporter = nodemailer.createTransport({
   debug: true,   
 });
 
+// Отправка тестового письма
 const sendTestEmail = async (): Promise<void> => {
   for (let i = 0; i < ports.length; i++) {
     const port = ports[i];
     try {
       console.log(`📝 Trying port: ${port}`);
-      
+
+      // Заменяем {{name}} на имя получателя
       const emailContent = htmlTemplate.replace('{{name}}', 'David');
 
+      // Отправляем письмо
       const info = await transporter.sendMail({
         from: process.env.EMAIL_FROM, 
         to: 'davidbadzgaradze@gmail.com',
@@ -49,4 +62,5 @@ const sendTestEmail = async (): Promise<void> => {
   }
 };
 
+// Запускаем отправку тестового письма
 sendTestEmail();
