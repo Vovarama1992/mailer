@@ -36,6 +36,9 @@ const sendTestEmail = async (): Promise<void> => {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
+        tls: {
+          rejectUnauthorized: false,
+        },
         logger: true,  
         debug: true,   
       });
