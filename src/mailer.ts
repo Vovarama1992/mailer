@@ -16,11 +16,14 @@ const ports: number[] = [465];
 // Создание транспортера для отправки почты
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: 465,  // Попробуйте начать с порта 465
+  port: 465,
   secure: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,  // Отключаем проверку сертификатов
   },
   logger: true,
   debug: true,
