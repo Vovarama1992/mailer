@@ -15,7 +15,7 @@ const ports: number[] = [465];
 
 // Создание транспортера для отправки почты
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
+  host: '127.0.0.1',
   port: 465,
   secure: true,
   auth: {
