@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
 const sendTestEmail = async (): Promise<void> => {
   try {
     // Заменяем шаблон {{name}} на значение "David"
-    const emailContent = htmlTemplate.replace('{{name}}', 'David');
+    const emailContent = templatePath.replace('{{name}}', 'David');
 
     const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM, // Адрес отправителя из .env
