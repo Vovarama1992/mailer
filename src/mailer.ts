@@ -5,8 +5,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), 'template.html');
-const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+
+const templatePath = path.join(__dirname, '../template.html');
 
 // Настройка транспорта
 const transporter = nodemailer.createTransport({
