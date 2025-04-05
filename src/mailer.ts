@@ -1,75 +1,43 @@
-import * as dotenv from 'dotenv';
-import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as nodemailer from 'nodemailer';
+import * as dotenv from 'dotenv';
 
-// Устанавливаем переменные окружения
 dotenv.config();
 
-// Получаем путь к текущему файлу
 const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), 'template.html');
-let htmlTemplate = fs.readFileSync(templatePath, 'utf8');
+const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
-// Список портов для пробования
-const ports: number[] = [465];
-
-// Создание транспортера для отправки почты
+// Настройка транспорта
 const transporter = nodemailer.createTransport({
   host: '127.0.0.1',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
+  port: 25,
+  secure: false,  // Не используем SSL, так как это локальный сервер
   tls: {
-    rejectUnauthorized: false,  // Отключаем проверку сертификатов
+    rejectUnauthorized: false,
   },
   logger: true,
   debug: true,
 });
 
-// Отправка тестового письма
+// Функция для отправки тестового письма
 const sendTestEmail = async (): Promise<void> => {
-  for (let i = 0; i < ports.length; i++) {
-    const port = ports[i];
-    try {
-      console.log(`📝 Trying port: ${port}`);
+  try {
+    // Заменяем шаблон {{name}} на значение "David"
+    const emailContent = htmlTemplate.replace('{{name}}', 'David');
 
-      // Создание транспортера для каждого порта
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: port,
-        secure: port === 465,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-        logger: true,
-        debug: true,
-      });
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM, // Адрес отправителя из .env
+      to: 'davidbadzgaradze@gmail.com', // Получатель
+      subject: 'Test email from Postfix', // Тема письма
+      html: emailContent, // Тело письма с подставленным значением
+    });
 
-      // Заменяем {{name}} на имя получателя
-      const emailContent = htmlTemplate.replace('{{name}}', 'David');
-
-      // Отправляем письмо
-      const info = await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: 'davidbadzgaradze@gmail.com',
-        subject: 'Test email from SMTP server',
-        html: emailContent,
-      });
-
-      console.log(`✅ Message sent on port ${port}: ${info.messageId}`);
-      break;
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(`❌ Error sending email on port ${port}: ${err.message}`);
-      } else {
-        console.error(`❌ Error on port ${port}: Unknown error`);
-      }
-    }
+    console.log(`✅ Message sent: ${info.messageId}`);
+  } catch (err) {
+    console.error(`❌ Failed to send email:`, err);
   }
 };
 
+// Отправляем письмо
 sendTestEmail();
