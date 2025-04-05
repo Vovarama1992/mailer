@@ -5,14 +5,15 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// Используем import.meta.url, чтобы получить путь к шаблону
+const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), '../template.html');
+const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
-const templatePath = path.join(__dirname, '../template.html');
-
-// Настройка транспорта
+// Настройка транспортира
 const transporter = nodemailer.createTransport({
   host: '127.0.0.1',
   port: 25,
-  secure: false,  // Не используем SSL, так как это локальный сервер
+  secure: false,
   tls: {
     rejectUnauthorized: false,
   },
@@ -20,17 +21,18 @@ const transporter = nodemailer.createTransport({
   debug: true,
 });
 
-// Функция для отправки тестового письма
+// Функция для отправки письма
 const sendTestEmail = async (): Promise<void> => {
   try {
-    // Заменяем шаблон {{name}} на значение "David"
-    const emailContent = templatePath.replace('{{name}}', 'David');
+    // Заменяем имя в шаблоне
+    const emailContent = htmlTemplate.replace('{{name}}', 'David');
 
+    // Отправляем письмо на два адреса
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM, // Адрес отправителя из .env
-      to: 'davidbadzgaradze@gmail.com', // Получатель
-      subject: 'Test email from Postfix', // Тема письма
-      html: emailContent, // Тело письма с подставленным значением
+      from: process.env.EMAIL_FROM,
+      to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com', // Два адреса в поле "to"
+      subject: 'Test email from Postfix',
+      html: emailContent,
     });
 
     console.log(`✅ Message sent: ${info.messageId}`);
@@ -39,5 +41,4 @@ const sendTestEmail = async (): Promise<void> => {
   }
 };
 
-// Отправляем письмо
 sendTestEmail();
