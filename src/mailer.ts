@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// Используем import.meta.url, чтобы получить путь к шаблону
+// Путь к шаблону
 const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), '../template.html');
 const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
 
@@ -24,15 +24,11 @@ const transporter = nodemailer.createTransport({
 // Функция для отправки письма
 const sendTestEmail = async (): Promise<void> => {
   try {
-    // Заменяем имя в шаблоне
-    const emailContent = htmlTemplate.replace('{{name}}', 'David');
-
-    // Отправляем письмо на два адреса
     const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM,
-      to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com', // Два адреса в поле "to"
+      to: ['davidbadzgaradze@gmail.com', 'vovayhh9988@gmail.com'],
       subject: 'Test email from Postfix',
-      html: emailContent,
+      html: htmlTemplate,
     });
 
     console.log(`✅ Message sent: ${info.messageId}`);
