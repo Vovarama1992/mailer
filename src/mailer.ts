@@ -21,19 +21,22 @@ const transporter = nodemailer.createTransport({
   debug: true,
 });
 
-// Функция для отправки письма
-const sendTestEmail = async (): Promise<void> => {
+const sendTestEmail = async () => {
   try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: ['davidbadzgaradze@gmail.com', 'vovayhh9988@gmail.com'],
-      subject: 'Test email from Postfix',
-      html: htmlTemplate,
-    });
+      const emailContent = htmlTemplate.replace('{{name}}', 'David')
+                                      .replace('{{subject}}', 'Тестовое письмо от Postfix')
+                                      .replace('{{offer_details}}', 'Получите 100 бесплатных спинов!');
 
-    console.log(`✅ Message sent: ${info.messageId}`);
+      const info = await transporter.sendMail({
+          from: process.env.EMAIL_FROM,
+          to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com',
+          subject: 'Test email from Postfix',
+          html: emailContent,
+      });
+
+      console.log(`✅ Message sent: ${info.messageId}`);
   } catch (err) {
-    console.error(`❌ Failed to send email:`, err);
+      console.error(`❌ Failed to send email:`, err);
   }
 };
 
