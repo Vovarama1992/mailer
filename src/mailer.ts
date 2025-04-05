@@ -29,7 +29,7 @@ const sendTestEmail = async () => {
 
       const info = await transporter.sendMail({
           from: process.env.EMAIL_FROM,
-          to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com',
+          to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com, duta1101@gmail.com',
           subject: 'Test email from Postfix',
           html: emailContent,
       });
