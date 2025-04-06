@@ -8,7 +8,6 @@ dotenv.config();
 // Путь к шаблону
 const templatePath = path.join(path.dirname(new URL(import.meta.url).pathname), '../template.html');
 const htmlTemplate = fs.readFileSync(templatePath, 'utf8');
-const pathToBanner = path.join(path.dirname(new URL(import.meta.url).pathname), 'banner.jpg');
 
 // Настройка транспортира
 const transporter = nodemailer.createTransport({
@@ -24,27 +23,20 @@ const transporter = nodemailer.createTransport({
 
 const sendTestEmail = async () => {
   try {
-      const emailContent = htmlTemplate.replace('{{name}}', 'David')
-                                      .replace('{{subject}}', 'Тестовое письмо от Postfix')
-                                      .replace('{{offer_details}}', 'Получите 100 бесплатных спинов!');
+    const emailContent = htmlTemplate.replace('{{name}}', 'David')
+                                    .replace('{{subject}}', 'Тестовое письмо от Postfix')
+                                    .replace('{{offer_details}}', 'Получите 100 бесплатных спинов!');
 
-      const info = await transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com, duta1101@gmail.com, test-46i49qpqw@srv1.mail-tester.com',
-          subject: 'Test email from Postfix',
-          html: emailContent,
-          attachments: [
-            {
-              filename: 'banner.jpg', // Имя файла
-              path: pathToBanner, // Путь к файлу на сервере
-              cid: 'bannerImage' // Этот cid должен совпадать с ссылкой в HTML
-            }
-          ]
-      });
+    const info = await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: 'davidbadzgaradze@gmail.com, vovayhh9988@gmail.com, duta1101@gmail.com, test-46i49qpqw@srv1.mail-tester.com',
+        subject: 'Test email from Postfix',
+        html: emailContent,
+    });
 
-      console.log(`✅ Message sent: ${info.messageId}`);
+    console.log(`✅ Message sent: ${info.messageId}`);
   } catch (err) {
-      console.error(`❌ Failed to send email:`, err);
+    console.error(`❌ Failed to send email:`, err);
   }
 };
 
